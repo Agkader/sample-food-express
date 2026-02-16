@@ -1,207 +1,132 @@
-# FoodExpress API
+```markdown
+# FoodExpress API - Cloud-Native Microservice
 
-**Pour le professeur** : Un guide d'installation rapide est disponible à la fin de ce document.
+![Google Cloud](https://img.shields.io/badge/GoogleCloud-%234285F4.svg?style=for-the-badge&logo=google-cloud&logoColor=white)
+![Docker](https://img.shields.io/badge/docker-%230db7ed.svg?style=for-the-badge&logo=docker&logoColor=white)
+![NodeJS](https://img.shields.io/badge/node.js-6DA55F?style=for-the-badge&logo=node.js&logoColor=white)
+![Express.js](https://img.shields.io/badge/express.js-%23404d59.svg?style=for-the-badge&logo=express&logoColor=%2361DAFB)
+![MongoDB](https://img.shields.io/badge/MongoDB-%234ea94b.svg?style=for-the-badge&logo=mongodb&logoColor=white)
 
-Food Express est un projet académique développé dans le cadre du cursus SUPINFO Lille, consistant en une API RESTful pour une plateforme de commande de nourriture. Cette API permet aux utilisateurs de créer des comptes et de s'authentifier, de parcourir les restaurants et leurs menus. Développée avec Node.js, Express.js et MongoDB, cette solution gère la gestion des utilisateurs, l'enregistrement des restaurants et les modifications de menus grâce à un système d'authentification sécurisé basé sur JWT. Ce projet est intégralement disponible sur GitHub pour consultation.
+Une API RESTful scalable et sécurisée pour la gestion de commandes de restauration. Conçue avec une approche **DevOps**, cette application est conteneurisée via **Docker** et déployée sur une infrastructure Serverless **Google Cloud Run**.
 
-##  Fonctionnalités
-### Gestion des Utilisateurs (`user`)
--  Inscription d'utilisateur avec validation joi  (accès public)
--  Connexion utilisateur avec authentification JWT
--  Opérations CRUD pour les comptes utilisateurs
--  Contrôle d'accès basé sur les rôles (utilisateur/admin)
--  Les utilisateurs ne peuvent modifier que leurs propres comptes
--  Les administrateurs ont un contrôle total sur tous les utilisateurs
+## Démo Live (Déploiement Cloud)
 
-### Gestion des Restaurants (`restaurants`)
--   Accès en lecture public avec tri et pagination
--   Opérations de création, mise à jour, suppression (admin uniquement)
+L'application est déployée en production et accessible publiquement.
 
-### Gestion des Menus (`menus`)
--  Accès en lecture public avec tri et pagination
--  Opérations de création, mise à jour, suppression (admin uniquement)
--  Filtrage des menus par restaurant
+- **🌐 URL de l'API :** [https://[COLLER_TON_URL_CLOUD_RUN_ICI].a.run.app](https://[COLLER_TON_URL_CLOUD_RUN_ICI].a.run.app)
+- **📄 Documentation Swagger :** [https://[COLLER_TON_URL_CLOUD_RUN_ICI].a.run.app/api-docs](https://[COLLER_TON_URL_CLOUD_RUN_ICI].a.run.app/api-docs)
 
-## Technologies Utilisées
+Note : Le premier chargement peut prendre quelques secondes (Cold Start du Serverless).
 
-- **Framework Backend :** Node.js, Express.js
-- **Base de Données :** MongoDB Atlas (Cloud)
-- **Authentification :** JWT (JSON Web Tokens)
-- **Validation :** Joi
-- **Hachage de Mot de Passe :** bcryptjs
-- **Tests :** Jest, Supertest
-- **Documentation :** Swagger/OpenAPI
-- **Variables d'Environnement :** dotenv
+---
 
-##  Prérequis
+## Architecture Cloud & DevOps
 
-Avant d'exécuter ce projet, assurez-vous d'avoir installé :
+Ce projet démontre une chaîne de déploiement moderne (CI/CD) et une architecture Cloud-Native :
 
-- ## Node.js 
-- ## npm 
-- ## Compte MongoDB Atlas conseiller pas obligatoire ( j'ai utilise la version en ligne de mongodb version gratuite) 
+1.  **Dockerisation :** L'application est packagée dans un conteneur léger (image `node:alpine`) pour garantir la portabilité et la consistance entre dev et prod.
+2.  **Serverless Computing :** Hébergement sur **Google Cloud Run** (Region Europe-West9) pour assurer l'auto-scaling (mise à l'échelle automatique selon le trafic).
+3.  **CI/CD Pipeline :** Intégration continue via GitHub connecté à **Google Cloud Build** (Build automatique de l'image Docker -> Push vers Artifact Registry -> Déploiement).
+4.  **Sécurité  :**
+    * Authentification via **JWT** (JSON Web Tokens).
+    * Gestion des secrets (URI MongoDB, clés API) via les **Variables d'Environnement** sécurisées du Cloud.
 
-##  Installation
 
-### Étape 1 : Extraire ou Cloner le Projet
 
-- Extraire le fichier ZIP et naviguer vers le dossier  sample-food-express
+---
 
-### Étape 2 : Installer les Dépendances
-```bash ou bien terminal  
+## 🛠 Stack Technique
+
+### Backend & Data
+- **Runtime :** Node.js & Express.js
+- **Base de Données :** MongoDB Atlas (Cluster Cloud)
+- **Validation & Sécurité :** Joi (Validation des entrées), Bcrypt (Hachage MDP)
+- **Documentation :** Swagger / OpenAPI 3.0
+
+### DevOps & Infrastructure
+- **Container :** Docker & Dockerfile optimisé
+- **Cloud Provider :** Google Cloud Platform (GCP)
+- **Orchestration :** Cloud Run (Managed Serverless)
+
+---
+
+## 💻 Installation & Démarrage (Local)
+
+### Prérequis
+- Node.js & npm
+- Docker (Optionnel, pour tester le conteneur)
+- Un fichier `.env` à la racine
+
+### Configuration (.env)
+Créez un fichier `.env` à la racine du projet :
+```env
+DB_CONNECT=votre_url_mongodb_atlas
+TOKEN_SECRET=votre_cle_secrete_jwt
+# PORT=3000 (Optionnel, géré automatiquement par Cloud Run)
+
+```
+
+### Option A : Démarrage classique (Node.js)
+
+```bash
+# 1. Installer les dépendances
 npm install
+
+# 2. Lancer le serveur (avec nodemon si installé)
+npm start
+
 ```
 
-##  Configuration de l'Environnement
+### Option B : Démarrage avec Docker (Recommandé)
 
-### Étape 1 : Créer le Fichier `.env` 
-
-### Étape 2 : Ajouter les Variables d'Environnement
-
-Ouvrez le fichier `.env` et ajoutez la configuration suivante :
-# Configuration MongoDB
-# Remplacez <username>, <password> et <cluster-url> par vos identifiants MongoDB Atlas
-DB_CONNECT = ici copier votre url mongodb
-Note : N'oubliez pas de mettre à jour votre adresse IP
-# Secret JWT 
-TOKEN_SECRET= ici  votre_cle_secrete_jwt
-
-##  Démarrage de l'Application
-
-### Démarrer le Serveur
-Dans le terminal de vs code  npm start
-
-Vous devriez voir :
-
-Server is running on http://localhost:3000
-Connected to MongoDB database
-
-Si vous voyez ces messages, l'application fonctionne correctement 
-
-### Mode Développement (avec rechargement automatique)
-
-**Note :** Si `nodemon` n'est pas installé, vous pouvez l'ajouter :
 ```bash
-npm install --save-dev nodemon
+# 1. Construire l'image Docker
+docker build -t food-express-api .
+
+# 2. Lancer le conteneur (en injectant les variables d'env)
+docker run -p 3000:3000 --env-file .env food-express-api
+
 ```
 
-### Accéder à l'API
+---
 
-Une fois l'application lancée, vous pouvez accéder à :
-- **URL de Base de l'API :** `http://localhost:3000`
-- **Documentation Swagger :** `http://localhost:3000/api-docs`
+##  Tests Unitaires & Intégration
 
-### Exécuter Tous les Tests
+Le projet inclut une suite de tests complète avec **Jest** et **Supertest**.
+
 ```bash
+# Lancer tous les tests
 npm test
-```
 
-### Exécuter un Fichier de Test Spécifique
-```bash
+# Lancer un test spécifique
 npm test user.test.js
-npm test auth.test.js
-npm test restaurant.test.js
-npm test menu.test.js
+
 ```
 
-### Résultats de Tests Attendus
-```
-Test Suites: 4 passed, 4 total
-Tests:       51 passed, 51 total
-Snapshots:   0 total
-```
+---
 
-Note :Les tests utilisent des connexions de base de données simulées, donc MongoDB n'a pas besoin d'être en cours d'exécution pour les tests.
+## Contexte Académique & Instructions (Professeur)
 
-##  Documentation API
+**Auteur :** Abdoul Ganiyou Kader
+**Cours :** Développement API - Node.js (Supinfo Lille)
 
-### La documentation complète de l'API est disponible à :
- Swagger UI : `http://localhost:3000/api-docs`
+### Identifiants de Test (Admin & User)
 
-##  Authentification
+Pour tester les fonctionnalités protégées sans créer de compte :
 
-Cette API utilise JWT pour l'authentification.
+| Rôle | Email | Mot de Passe |
+| --- | --- | --- |
+| **Admin** | `admin@foodexpress.com` | `Admin123!` |
+| **User** | `user@test.com` | `Password123!` |
 
-### Comment S'Authentifier
-pour les test qui suivront ont utulisera postman mais d'autres alternatives sont possible 
-1. S'inscrire ou se connecter ou bien pour obtenir un token :
+*(Note : Le compte Admin a été configuré manuellement via MongoDB Atlas en passant le champ `isAdmin: true`).*
 
- POST http://localhost:3000/api/user/registeroulogin  dans postam 
+### Fonctionnalités Clés
 
+* **User :** Inscription, Login, CRUD profil.
+* **Restaurant/Menu :** CRUD (Admin seulement), Lecture publique avec filtres et pagination.
+* **Sécurité :** Middleware de vérification de token JWT sur les routes protégées.
 
-2. Inclure le token dans l'en-tête de la requête :
-
-   auth-token: VOTRE_TOKEN_JWT_ICI
-
-##  Compte Administrateur par Défaut
-
-Pour créer un compte administrateur pour les tests, vous pouvez :
-
-### S'inscrire et Mettre à Jour Manuellement la Base de Données
-
-1. **Inscrivez un utilisateur normal :**
-
-2. **Dans MongoDB Atlas**, allez dans votre base de données et mettez à jour l'utilisateur :
-   - Trouvez l'utilisateur dans la collection `users`
-   - Modifiez le champ : `isAdmin: true`
-
-
-## Instructions pour le Professeur
-
-### Démarrage Rapide
-
-1. **Extraire le projet du dossier Zip**
-```bash
-   cd sample-food-express
 ```
 
-2. **Installer les dépendances**
-```bash
-   npm install
 ```
-
-3. **Configurer l'environnement**
-   - Copier `.env.example` vers `.env`
-   - Ajouter votre chaîne de connexion MongoDB Atlas
-   - DB_CONNECT = ici copier votre url mongodb
-    Note : N'oubliez pas de mettre à jour votre adresse IP
-   - TOKEN_SECRET= ici  votre_cle_secrete_jwt
-
-4. **Démarrer l'application**
-```bash
-   npm start
-```
-
-5. **Exécuter les tests**
-```bash
-   npm test
-```
-
-6. **Accéder à la documentation**
-   - Ouvrir : `http://localhost:3000/api-docs`
-
-### Compte de Test
-
-**Utilisateur Normal :**
-- Email : `user@test.com`
-- Mot de passe : `Password123!`
-
-**Administrateur :**
-- Email : `admin@foodexpress.com`
-- Mot de passe : `Admin123!`
-
-Note = Créer manuellement via l'inscription, puis mettre à jour `isAdmin: true` dans MongoDB
-
-## Auteur
-
-**[Votre Nom]** Abdoul Ganiyou Kader
-**Date :** 26/10/2025
-**Cours :** Développement API - Node.js  
-**Institution :** Supinfo Lille
-
-## 📄 Licence
-
-Ce projet est créé à des fins éducatives dans le cadre du cours **Développement API - Node.js**.
-
-
-**Merci d'avoir examiné ce projet !**

@@ -1,6 +1,6 @@
 const express = require('express');
 const app = express();
-const port = 3000;
+const port = process.env.PORT || 3000;
 const dotenv = require('dotenv');
 dotenv.config();
 require('./config/db.config');
@@ -36,8 +36,8 @@ app.use('/api/restaurants', restaurantRoutes);
 app.use('/api/menus', menuRoutes);
 
 // Start the server
-const index = app.listen (port, () => {
-  console.log(`Server is running on http://localhost:3000`);
+const index = app.listen(port, () => {
+  console.log(`Server is running on port ${port}`);
 });
 
 module.exports = { app, index };
