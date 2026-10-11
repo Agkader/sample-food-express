@@ -50,7 +50,7 @@ jobs:
         docker push $IMAGE_TAG
         
         # Injection du nom de l'image dans le fichier de déploiement Kubernetes
-        sed -i "s|PLACEHOLDER_IMAGE|$IMAGE_TAG|g" deployment.yaml
+        sed -i "s|PLACEHOLDER_IMAGE|$IMAGE_TAG|g" k8s/deployment.yaml
 
     - name: Déploiement sur Kubernetes
       run: |
@@ -58,5 +58,5 @@ jobs:
         kubectl create secret generic restaurant-secrets --from-literal=database-url="postgres://user:pass@localhost:5432/db" --dry-run=client -o yaml | kubectl apply -f -
         
         # 2. Déploiement de l'application et du service
-        kubectl apply -f deployment.yaml
-        kubectl apply -f service.yaml
+        kubectl apply -f k8s/deployment.yaml
+        kubectl apply -f k8s/service.yaml
