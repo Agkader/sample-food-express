@@ -1,0 +1,62 @@
+name: Déploiement GKE (Food Express)
+
+on:
+  push:
+    branches:
+      - main
+
+env:
+  PROJECT_ID: ${{ secrets.GCP_PROJECT_ID }}
+  REGION: europe-west1
+  CLUSTER_NAME: restaurant-cluster
+  REPO_NAME: restaurant-api
+  IMAGE_NAME: api
+
+jobs:
+  deploy:
+    name: Build & Deploy
+    runs-on: ubuntu-latest
+    
+    permissions:
+      contents: 'read'
+      id-token: 'write'
+
+    steps:
+    - name: Checkout du code
+      uses: actions/checkout@v4
+
+    - name: Authentification Google Cloud (Workload Identity)
+      uses: google-github-actions/auth@v2
+      with:
+        workload_identity_provider: ${{ secrets.WIF_PROVIDER }}
+        service_account: ${{ secrets.WIF_SERVICE_ACCOUNT }}
+
+    - name: Configuration de Google Cloud SDK
+      uses: google-github-actions/setup-gcloud@v2
+
+    - name: Configuration de Docker pour Artifact Registry
+      run: gcloud auth configure-docker ${{ env.REGION }}-docker.pkg.dev
+
+    - name: Connexion au cluster GKE
+      uses: google-github-actions/get-gke-credentials@v2
+      with:
+        cluster_name: ${{ env.CLUSTER_NAME }}
+        location: ${{ env.REGION }}
+
+    - name: Build & Push de l'image Docker
+      run: |
+        IMAGE_TAG=${{ env.REGION }}-docker.pkg.dev/${{ env.PROJECT_ID }}/${{ env.REPO_NAME }}/${{ env.IMAGE_NAME }}:${{ github.sha }}
+        docker build -t $IMAGE_TAG .
+        docker push $IMAGE_TAG
+        
+        # Injection du nom de l'image dans le fichier de déploiement Kubernetes
+        sed -i "s|PLACEHOLDER_IMAGE|$IMAGE_TAG|g" deployment.yaml
+
+    - name: Déploiement sur Kubernetes
+      run: |
+        # 1. Création d'un faux secret pour la base de données (pour que l'API ne plante pas au démarrage)
+        kubectl create secret generic restaurant-secrets --from-literal=database-url="postgres://user:pass@localhost:5432/db" --dry-run=client -o yaml | kubectl apply -f -
+        
+        # 2. Déploiement de l'application et du service
+        kubectl apply -f deployment.yaml
+        kubectl apply -f service.yaml

@@ -123,3 +123,8 @@ api-docs/
 # Nodemon
 nodemon.json
 !nodemon.json.example
+#terraform
+terraform/.terraform/
+terraform/*.tfstate
+terraform/*.tfstate.backup
+terraform/terraform.tfvars
