@@ -59,4 +59,4 @@ jobs:
         
         # 2. Déploiement de l'application et du service
         kubectl apply -f k8s/deployment.yaml
-        kubectl apply -f k8s/service.yaml
+        kubectl apply -f k8s/service.yamlhelm repo add prometheus-community https://prometheus-community.github.io/helm-charts
