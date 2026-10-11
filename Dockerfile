@@ -1,20 +1,17 @@
-# On part d'une version légère de Node
-FROM node:18-alpine
+# On utilise "slim" au lieu de "alpine" pour une compatibilité parfaite
+FROM node:18-slim
 
-# On crée le dossier dans le conteneur
 WORKDIR /app
 
-# On copie les fichiers de config d'abord (pour le cache)
+# On copie d'abord les fichiers de dépendances
 COPY package*.json ./
 
-# On installe UNIQUEMENT les dépendances de prod )
-RUN npm install --only=production
+# Nouvelle syntaxe Node 18+ pour installer sans les dépendances de dev
+RUN npm install --omit=dev
 
-# On copie tout le reste de ton code
+# On copie le reste du code
 COPY . .
 
-# On dit à Docker que l'app écoute sur un port (informatif)
 EXPOSE 3000
 
-# La commande de démarrage
 CMD ["npm", "start"]
