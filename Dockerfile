@@ -1,16 +1,14 @@
-# On utilise "slim" au lieu de "alpine" pour une compatibilité parfaite
 FROM node:18-slim
 
 WORKDIR /app
 
-# On copie d'abord les fichiers de dépendances
-COPY package*.json ./
+# On va chercher le package.json DANS ton dossier local "app/"
+COPY app/package*.json ./
 
-# Nouvelle syntaxe Node 18+ pour installer sans les dépendances de dev
 RUN npm install --omit=dev
 
-# On copie le reste du code
-COPY . .
+# On copie tout le contenu de ton dossier "app/" local vers le conteneur
+COPY app/ .
 
 EXPOSE 3000
 
