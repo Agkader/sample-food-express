@@ -93,7 +93,7 @@ resource "google_service_account_iam_member" "workload_identity_user" {
   member             = "principalSet://iam.googleapis.com/${google_iam_workload_identity_pool.github_pool.name}/attribute.repository/Agkader/sample-food-express"
 }
 
-# OUTPUTS (Valeurs à copier-coller dans les Secrets GitHub)
+# OUTPUTS 
 
 output "WIF_PROVIDER" {
   description = "Copier cette valeur dans le secret GitHub WIF_PROVIDER"

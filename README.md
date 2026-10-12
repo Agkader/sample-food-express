@@ -19,9 +19,13 @@ Le projet a évolué d'un simple déploiement Serverless vers un véritable clus
 
 ![Pipeline CI/CD GitHub Actions](assets/github-actions.png)
 
+assets/github-actions.png
+
 - **Sécurité (DevSecOps) :** Authentification du pipeline CI/CD via **Google Workload Identity Federation** (Keyless, sans clés de service statiques).
 - **Orchestration :** Hébergement haute disponibilité sur **Google Kubernetes Engine (GKE)**.
 - **Observabilité :** Monitoring du cluster et des pods applicatifs avec **Prometheus** et **Grafana** (déployés via Helm).
+
+assets/Screenshot 2026-10-11 044728 - Copy (2).png
 
 ---
 

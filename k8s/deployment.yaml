@@ -30,7 +30,7 @@ spec:
                   name: restaurant-secrets
                   key: database-url
           
-          # 🔹 LIMITES DE RESSOURCES (Parfait pour GKE Autopilot)
+          # 🔹 LIMITES DE RESSOURCES 
           resources:
             requests:
               cpu: "100m"
@@ -39,7 +39,7 @@ spec:
               cpu: "500m"
               memory: "512Mi"
               
-          # 🔹 SONDES DE SANTÉ (Le détail "DevOps Senior")
+          # 🔹 SONDES DE SANTÉ 
           livenessProbe:
             httpGet:
               path: /health
